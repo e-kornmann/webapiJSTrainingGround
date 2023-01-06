@@ -1,6 +1,8 @@
 const express = require('express');
 const dataServer = express();
+
 dataServer.use(express.json());
+const { check, validationResult } = require('express-validator');
 
 const db = [
   {
@@ -15,9 +17,12 @@ const db = [
   }
 ];
 
+
+
+
 // get redirected if someone requests homepage
 dataServer.get('/', function(req, res) {
-  res.sendFile(__dirname + '/static/devsNotFound.html');
+  res.sendFile(__dirname + '/static/simple-fetch-setup.html');
 });
 
 // get db object with all devs 
@@ -29,21 +34,33 @@ res
 
 
 // POST
-dataServer.post('/api/developers/', (req, res) => {
+dataServer.post('/api/developers/', 
+    check('email').isEmail(),
+
+
+(req, res) => {
   
-      const newDev = {
-              id: db.length + 1,
-              name: req.body.name,
-              email: req.body.email,
-            };
+  //error handler
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  
+    //put in in the database
+    const newDev = {
+      id: db.length + 1,
+      name: req.body.name,
+      email: req.body.email,
+    }
+
+    db.push(newDev);
       
-            db.push(newDev);
-      
-          res
-           .status(201)
-           .setHeader('location', `/api/developers/${newDev.id}`)
-           .json(newDev);
-      });
+    res
+     .status(201)
+     .setHeader('location', `/api/developers/${newDev.id}`)
+     .json(newDev);
+});
       
 
 // GET

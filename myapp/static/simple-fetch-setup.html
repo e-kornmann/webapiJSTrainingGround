@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+
+function getdevelopers(element) {
+  fetch('http://localhost:3000/api/developers')
+    .then(response => response.json())
+    .then(data => {
+      // element.textContent = data.length;
+      const developerList = document.createElement('div');
+
+      for (let i = 0; i < data.length; i++) {
+        const developer = data[i];
+        const developerName = document.createElement('h2');
+        const developerEmail = document.createElement('h4');
+        developerName.textContent = `${developer.name}`
+        developerEmail.textContent = `${developer.email}`
+        
+        developerList.appendChild(developerName);
+        developerList.appendChild(developerEmail);
+       
+      };
+      element.appendChild(developerList);
+    });
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mainElement = document.querySelector('main');
+  getdevelopers(mainElement);
+});
+</script>
+    <title>Simple fetch setup</title>
+</head>
+<body>
+  
+    <main>
+
+    </main>
+    
+</body>
+</html>
